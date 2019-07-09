@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Software\Docker\kompose-windows-amd64.exe convert
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: db
+  name: db
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: db
+    spec:
+      containers:
+      - image: oscarfonts/h2
+        name: zeebe_db
+        ports:
+        - containerPort: 1521
+        - containerPort: 81
+        resources: {}
+      restartPolicy: Always
+status: {}

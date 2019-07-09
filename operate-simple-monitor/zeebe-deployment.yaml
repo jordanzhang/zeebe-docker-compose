@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Software\Docker\kompose-windows-amd64.exe convert
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: zeebe
+  name: zeebe
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: zeebe
+    spec:
+      containers:
+      - env:
+        - name: SIMPLE_MONITOR_EXPORTER_JDBC_URL
+          value: jdbc:h2:tcp://db:1521/zeebe-monitor
+        - name: ZEEBE_LOG_LEVEL
+          value: debug
+        image: camunda/zeebe:0.18.0
+        name: zeebe_broker
+        ports:
+        - containerPort: 26500
+        - containerPort: 5701
+        resources: {}
+        volumeMounts:
+        - mountPath: /usr/local/zeebe/lib/zeebe-simple-monitor-exporter.jar
+          name: zeebe-claim0
+        - mountPath: /usr/local/zeebe/lib/zeebe-hazelcast-exporter.jar
+          name: zeebe-claim1
+        - mountPath: /usr/local/zeebe/conf/zeebe.cfg.toml
+          name: zeebe-claim2
+      restartPolicy: Always
+      volumes:
+      - name: zeebe-claim0
+        persistentVolumeClaim:
+          claimName: zeebe-claim0
+      - name: zeebe-claim1
+        persistentVolumeClaim:
+          claimName: zeebe-claim1
+      - name: zeebe-claim2
+        persistentVolumeClaim:
+          claimName: zeebe-claim2
+status: {}
